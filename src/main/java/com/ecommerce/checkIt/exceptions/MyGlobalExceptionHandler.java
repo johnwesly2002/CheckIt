@@ -37,4 +37,5 @@ public class MyGlobalExceptionHandler {
         String message = e.getMessage();
         return new ResponseEntity<APIResponse>(new APIResponse(message, false), HttpStatus.BAD_REQUEST);
     }
+
 }
