@@ -2,8 +2,12 @@ package com.ecommerce.checkIt.controller;
 
 import com.ecommerce.checkIt.payload.OrderDTO;
 import com.ecommerce.checkIt.payload.OrderRequestDTO;
+import com.ecommerce.checkIt.payload.StripePaymentDTO;
 import com.ecommerce.checkIt.service.OrderService;
+import com.ecommerce.checkIt.service.StripeService;
 import com.ecommerce.checkIt.utils.AuthUtil;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +24,9 @@ public class OrderController {
     @Autowired
     AuthUtil authUtil;
 
+    @Autowired
+    StripeService stripeService;
+
     @PostMapping("/order/users/payments/{paymentMethod}")
     public ResponseEntity<OrderDTO> orderProducts(@PathVariable String paymentMethod, @Valid @RequestBody OrderRequestDTO orderRequestDTO) {
         String emailId = authUtil.loggedInEmail();
@@ -34,4 +41,10 @@ public class OrderController {
         );
         return new ResponseEntity<>(orderDTO, HttpStatus.OK);
     }
-}
+    @PostMapping("/order/stripe-client-secret")
+    public ResponseEntity<String> orderProducts(@RequestBody StripePaymentDTO stripePaymentDTO) throws StripeException {
+        System.out.println("Stripe payment information recevied" + stripePaymentDTO);
+        PaymentIntent paymentIntent = stripeService.paymentIntent(stripePaymentDTO);
+        return new ResponseEntity<>(paymentIntent.getClientSecret(), HttpStatus.CREATED);
+    }
+    }

@@ -2,6 +2,7 @@ package com.ecommerce.checkIt.controller;
 
 import com.ecommerce.checkIt.model.Cart;
 import com.ecommerce.checkIt.payload.CartDTO;
+import com.ecommerce.checkIt.payload.CartItemDTO;
 import com.ecommerce.checkIt.payload.ProductDTO;
 import com.ecommerce.checkIt.repositories.CartRepository;
 import com.ecommerce.checkIt.service.CartService;
@@ -26,6 +27,12 @@ public class CartController {
     private CartRepository cartRepository;
     @Autowired
     private ModelMapper modelMapper;
+
+    @PostMapping("/cart/create")
+    public ResponseEntity<String> createOrUpdateCart(@RequestBody List<CartItemDTO> cartItems) {
+        String response = cartService.createOrUpdateCartWithItems(cartItems);
+        return new ResponseEntity<String>(response, HttpStatus.CREATED);
+    }
 
     @PostMapping("/carts/products/{productId}/quantity/{quantity}")
     public ResponseEntity<CartDTO> addProductToCart(@PathVariable  Long productId,@PathVariable Integer quantity) {

@@ -63,7 +63,7 @@ public class AuthController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
         List<String> roles = userDetails.getAuthorities().stream().map(itm -> itm.getAuthority()).toList();
-        UserInfoResponse loginResponse = new UserInfoResponse(userDetails.getId(),jwtCookie.toString(), userDetails.getUsername(), roles);
+        UserInfoResponse loginResponse = new UserInfoResponse(userDetails.getId(),jwtCookie.toString(), userDetails.getUsername(),userDetails.getEmail(), roles);
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString()).body(loginResponse);
     }
@@ -128,7 +128,7 @@ public class AuthController {
     public ResponseEntity<?> getUserDetails(Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream().map(itm -> itm.getAuthority()).toList();
-        UserInfoResponse response = new UserInfoResponse(userDetails.getId(), userDetails.getUsername(), roles);
+        UserInfoResponse response = new UserInfoResponse(userDetails.getId(), userDetails.getUsername(),userDetails.getEmail(), roles);
         return ResponseEntity.ok().body(response);
     }
 }
